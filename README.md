@@ -1,48 +1,103 @@
-# داده کاوی
-## دیتاست 1000 سرطانی عمانی
-**این پروژه با JUPYTER NOTEBOOK نوشته شده است**
-### task 1
-ابتدا با خط های
+# Data Mining
+
+## Dataset: 1000 Omani Cancer Cases
+**This project is written using Jupyter Notebook.**
+
+---
+
+### Task 1: Data Overview and Visualization
+
+1. **خواندن کتابخانه های مورد نیاز**
+```python
 import pandas as pd
 import matplotlib.pyplot as plt
-دسترسی خود را به کتابخانه های مورد نیاز پروژه چک کرده سپس با دستور
+```
+
+2. **خواندن دیتاست**
+```python
 ds = pd.read_csv('_cancer_dataset_uae.csv')
-یک دیتاست که به صورت اکسل سیو شده است را در متغیری به نام ds ذخیره سازی نمونده و پس از آن با دستور
+```
+
+3. **انتخاب 1000 نفر از بین کل دیتاست**
+```python
 data = ds.head(1000)
-هزارتا از موجودیت های داده را انتخاب نمونده و چاپ کرده، سپس با دستور
+```
+
+4. **ستون Age برای داده کاوی انتخاب شد**
+```python
 dd = data.Age
-فقط ستون سن را اننتخاب نموده و با دستور
+```
+
+5. **Five-Number Summary**
+```python
 five_number_summary = dd.describe()
-از five_number_summary پرینت گرفته و مقادیری همچون min, max, q1, q2 و q3 را به دست آورده.
-سپس برای نمایش boxplot ستون Age از دستور زیر استفاده میکنیم
+```
+شامل: minimum, maximum, Q1, median (Q2), and Q3.
+
+6. **Boxplot of Age**
+```python
 plt.figure(figsize=(16, 8))
 plt.grid(True)
-plt.title('Age boxplot')
+plt.title('Age Boxplot')
 plt.boxplot(dd)
-همچنین برای اطمینان بیشتر از مقادیر و دقت جدول هم IQR و هم min range و max range با دستور زیر به دست آورده
+```
+
+7. **حساب کردن IQR, Min Range و Max Range**
+```python
 q1 = dd.quantile(0.25)
 q3 = dd.quantile(0.75)
 IQR = q3 - q1
 minimum = q1 - 1.5 * IQR
 maximum = q3 + 1.5 * IQR
-همچنین برای کشیدن انواع چارت های دیگر از دستورای زیر استفاده میکنیم
+```
+
+8. **بقیه چارت ها جهت نمایش**
+- **هیستوگرام**
+```python
 fig, ax = plt.subplots()
 ax.hist(dd, bins=8, linewidth=1, edgecolor="white")
+```
 
+- **ECDF Plot**
+```python
 fig, ax = plt.subplots()
 ax.ecdf(dd)
+```
 
+- **Step Plot**
+```python
 fig, ax = plt.subplots()
 ax.stairs(dd, linewidth=0.5)
-### task 2
-حال با دستور
+```
+
+---
+
+### Task 2: Missing Data Handling and Normalization
+
+1. **چک کردن داده های گمشده**
+```python
 data.isnull().sum()
-تعداد داده های گمشده جدول هزارتایی داده های خود را به دست آورده، برای درست کردن این موضوع ابتدا از دیتا یک کپی گرفته سپس داده های گمشده را با کلمه unknown جایگذاری میکنیم که به صورت مراحل زیر پیش میرویم
+```
+
+2. **کپی گرفتن از داده و جایگذاری داده های گمشده با کلمه unknown**
+```python
 data = data.copy()
 data.fillna("unknown", inplace=True)
-درنهایت با چاپ دوباره دستور
+```
+
+3. **تایید جایگذاری داده های گمشده**
+```python
 data.isnull().sum()
-متوجه میشویم که هیچ داده گمشده ای وجود ندارد.
-برای نرمال سازی به دو روش Z-Score و MinMax ابتدا برای مشاهده مقادیر اولیه جدول Age آن را که تحت عنوان متغیر dd تعریف شده است پرینت میکنیم سپس برای نمایش مقادیر نرمال سازی شده از دستورات زیر استفاده میکنیم.
+```
+
+4. **متود های نرمال سازی روی ستون Age**
+
+- **Z-Score**
+```python
 dd_zscore = (dd - dd.mean()) / dd.std()
+```
+
+- **Min-Max**
+```python
 dd_minmax = (dd - dd.min()) / (dd.max() - dd.min())
+```
