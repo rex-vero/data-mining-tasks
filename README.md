@@ -1,11 +1,11 @@
-# Data Mining
+# داده کاوی
 
-## Dataset: 1000 Omani Cancer Cases
-**This project is written using Jupyter Notebook.**
+## دیتاست 1000 سرطانی عمانی
+**این پروژه با Jupyter Notebook نوشته شده است.**
 
 ---
 
-### Task 1: Data Overview and Visualization
+### Task 1: نمایش داده
 
 1. **خواندن کتابخانه های مورد نیاز**
 ```python
@@ -72,7 +72,7 @@ ax.stairs(dd, linewidth=0.5)
 
 ---
 
-### Task 2: Missing Data Handling and Normalization
+### Task 2: نمایش داده های گمشده و نرمال سازی
 
 1. **چک کردن داده های گمشده**
 ```python
