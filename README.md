@@ -101,3 +101,40 @@ dd_zscore = (dd - dd.mean()) / dd.std()
 ```python
 dd_minmax = (dd - dd.min()) / (dd.max() - dd.min())
 ```
+
+---
+### Task 3: نمایش خوشه بندی
+
+1. **خواندن کتابخانه های مورد نیاز**
+```python
+from sklearn.cluster import KMeans
+import seaborn as sns
+```
+
+2. **تنظیم تعداد خوشه ها**
+```python
+kmeans = KMeans(n_clusters=4)
+```
+
+3. **رسم خوشه**
+```python
+plt.figure(figsize=(10, 3))
+sns.scatterplot(x=data['Age'], y=[0]*len(data), hue=labels, palette='Set2', s=100)
+plt.title("K-Means")
+plt.yticks([])
+plt.xlabel("Ages")
+plt.show()
+```
+
+4. **پیدا کردن مرکز هر خوشه**
+```python
+kmeans.cluster_centers_.round().astype(int)
+```
+
+5. **نمایش تعداد و مقادیر هر خوشه**
+```python
+for i in range(kmeans.n_clusters):
+    ages = data[data['K-means'] == i]['Age'].round().astype(int)
+    print(f"\nCluster: {i} (Length: {len(ages)}):")
+    print(ages.values)
+```
