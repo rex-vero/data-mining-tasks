@@ -54,19 +54,19 @@ maximum = q3 + 1.5 * IQR
 8. **بقیه چارت ها جهت نمایش**
 - **هیستوگرام**
 ```python
-fig, ax = plt.subplots()
+_, ax = plt.subplots()
 ax.hist(dd, bins=8, linewidth=1, edgecolor="white")
 ```
 
 - **ECDF Plot**
 ```python
-fig, ax = plt.subplots()
+_, ax = plt.subplots()
 ax.ecdf(dd)
 ```
 
 - **Step Plot**
 ```python
-fig, ax = plt.subplots()
+_, ax = plt.subplots()
 ax.stairs(dd, linewidth=0.5)
 ```
 
@@ -114,12 +114,13 @@ import seaborn as sns
 ```
 
 2. **تنظیم تعداد خوشه ها**
-اول برای K means
+
+* KMeans
 
 ```python
 kmeans = KMeans(n_clusters=4)
 ```
-بعد برای DBSCAN که شعاع و حداقل خوشه را نشان میدهیم
+* شعاع و تعداد خوشه برای DBSCAN
 
 ```python
 dbscan = DBSCAN(eps=1, min_samples=1)
@@ -130,15 +131,14 @@ dbscan = DBSCAN(eps=1, min_samples=1)
 dt=data.Cancer_Type
 ```
 4. **رسم خوشه**
-رسم kmeans با ستون عمودی تایپ سرطان
+* KMeans
 
 ```python
 sns.scatterplot(ax=axes[0], x=data.Age, y=dt, hue=k_labels, palette='Set2', s=70)
 axes[0].set_title("KMeans Clustering")
 axes[0].set_yticks(dt)
 ```
-رسم dbscan با ستون عمودی تایپ سرطان
-
+* DBSCAN
 ```python
 sns.scatterplot(ax=axes[1], x=data.Age, y=dt, hue=db_labels, palette='Set2', s=70)
 axes[1].set_title("DBSCAN Clustering")
@@ -152,7 +152,7 @@ kmeans.cluster_centers_.round().astype(int)
 ```
 
 6. **نمایش تعداد و مقادیر هر خوشه**
-kmeans
+* KMeans
 
 ```python
 for i in range(kmeans.n_clusters):
@@ -160,7 +160,7 @@ for i in range(kmeans.n_clusters):
     print(f"\nCluster: {i} (Length: {len(ages)}):")
     print(ages.values)
 ```
-dbscan
+* DBSCAN
 
 ```python
 for label in sorted(data['DBSCAN'].unique()):
@@ -175,3 +175,53 @@ for label in sorted(data['DBSCAN'].unique()):
 بعد از تعریف کتابخانه های مور نیاز، با دو روش خوشه بندی یعنی K-Means و DBSCAN میتوانیم تعداد خوشه ها و حتی مقایر و مرکز هر خوشه را مشاهده کرد.
 ---
 ### Task 4: نمایش طبقه بندی
+
+1. **خواندن کتابخانه های مورد نیاز**
+```python
+from sklearn.model_selection import train_test_split as tts
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
+```
+
+2. **تنظیم لیبل**
+
+```python
+le = LabelEncoder()
+data['Target'] = le.fit_transform(data['Cancer_Stage'])
+x = data[['Age']]
+y = data['Target']
+```
+3. **تمرین و تست از لیبل ها جهت رسم درخت**
+```python
+x_train, x_test, y_train, y_test = tts(x, y, test_size=0.2, random_state=42)
+```
+4. **تنظیم درخت تصمیم گیری**
+
+```python
+tree = DecisionTreeClassifier()
+tree.fit(x_train, y_train)
+tree_pred = tree.predict(x_test)
+```
+5. **گزارش عملکرد**
+*  Accuracy
+```python
+accuracy_score(y_test, tree_pred)
+```
+* Classification
+```python
+classification_report(y_test, tree_pred)
+```
+* Confusion Matrix
+```python
+confusion_matrix(y_test, tree_pred)
+```
+6. **شکل درخت تصمیم گیری**
+```python
+fig=plt.figure(figsize=(24,12))
+plot_tree(tree,feature_names=['Age'],class_names=le.classes_,filled=True,rounded=True,fontsize=5)
+plt.title("Decision Tree Classifier",fontsize=20)
+plt.show()
+```
+بعد از اینکه ستون Cancer_Stage را کلس خود قرار دادیم آن را با ستون Age مقایسه میکنیم، سپس داده را به آموزش و آزمون تقسیم میکنیم و با آن درخت تصمیم گیری را رسم نموده، گزارش عملکرد گرفته و درخت را نمایش میدهیم.
+---
