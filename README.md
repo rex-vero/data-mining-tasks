@@ -192,36 +192,53 @@ data['Target'] = le.fit_transform(data['Cancer_Stage'])
 x = data[['Age']]
 y = data['Target']
 ```
-3. **تمرین و تست از لیبل ها جهت رسم درخت**
+3. **تقسیم داده به آموزش و تست**
 ```python
 x_train, x_test, y_train, y_test = tts(x, y, test_size=0.2, random_state=42)
 ```
-4. **تنظیم درخت تصمیم گیری**
-
+4. **تنظیم داده جهت یادگیری و برچسب زنی**
+- درخت تصمیم گیری
 ```python
 tree = DecisionTreeClassifier()
 tree.fit(x_train, y_train)
 tree_pred = tree.predict(x_test)
 ```
-5. **گزارش عملکرد**
-*  Accuracy
+- بیزین ساده
 ```python
-accuracy_score(y_test, tree_pred)
+nb_model = GaussianNB()
+nb_model.fit(x_train, y_train)
+nb_pred = nb_model.predict(x_test)
 ```
+5. **گزارش عملکرد**
 * Classification
 ```python
-classification_report(y_test, tree_pred)
+classification_report(y_test, tree_pred, target_names = le.classes_) ##درخت تصمیم گیری
+classification_report(y_test, nb_pred, target_names = le.classes_) ##بیزین ساده
 ```
 * Confusion Matrix
 ```python
-confusion_matrix(y_test, tree_pred)
+confusion_matrix(y_test, tree_pred) ##درخت تصمیم گیری
+confusion_matrix(y_test, nb_pred) ##بیزین ساده
 ```
-6. **شکل درخت تصمیم گیری**
+6. **رسم نمودار ها**
+- درخت تصمیم گیری
 ```python
 fig=plt.figure(figsize=(24,12))
 plot_tree(tree,feature_names=['Age'],class_names=le.classes_,filled=True,rounded=True,fontsize=5)
 plt.title("Decision Tree Classifier",fontsize=20)
 plt.show()
 ```
-بعد از اینکه ستون Cancer_Stage را کلس خود قرار دادیم آن را با ستون Age مقایسه میکنیم، سپس داده را به آموزش و آزمون تقسیم میکنیم و با آن درخت تصمیم گیری را رسم نموده، گزارش عملکرد گرفته و درخت را نمایش میدهیم.
+- بیزین ساده
+```python
+plt.figure(figsize = (10, 6))
+for label in sorted(y.unique()):
+    sns.kdeplot(x_train[y_train == label]['Age'], fill = True, label = le.inverse_transform([label])[0])
+plt.title("Naive Bayes - Density of Age per Class")
+plt.xlabel("Age")
+plt.ylabel("Density")
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+بعد از اینکه ستون Cancer_Stage را کلس خود قرار دادیم آن را با ستون Age مقایسه میکنیم، سپس داده را به آموزش و آزمون تقسیم میکنیم و با آن درخت تصمیم گیری را رسم نموده، گزارش عملکرد گرفته و درخت را نمایش میدهیم، همین روند نیز برای بیزین ساده نیز انجام میگردد.
 ---
